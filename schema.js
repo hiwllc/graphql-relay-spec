@@ -1,28 +1,20 @@
-const {
-  GraphQLSchema,
-  GraphQLObjectType,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLID,
-} = require("graphql")
-const Book = require("./types/book/type")
+const { GraphQLSchema, GraphQLObjectType } = require("graphql")
+
+const { connectionArgs, connectionFromArray } = require("graphql-relay")
+
+const { BookConnection } = require("./types/book/type")
 const books = require("./types/book/resolver")
+
+const { nodeField } = require("./interfaces/Node")
 
 const query = new GraphQLObjectType({
   name: "Query",
   fields: {
+    node: nodeField,
     books: {
-      type: new GraphQLList(Book),
-      resolve: books.find,
-    },
-    book: {
-      type: Book,
-      args: {
-        id: {
-          type: new GraphQLNonNull(GraphQLID),
-        },
-      },
-      resolve: (context, { id }) => books.findOne(id),
+      type: BookConnection,
+      args: connectionArgs,
+      resolve: (ctx, args) => connectionFromArray(books.find(), args),
     },
   },
 })
