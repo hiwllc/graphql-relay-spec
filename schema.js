@@ -1,14 +1,23 @@
-const { GraphQLSchema, GraphQLObjectType } = require("graphql")
+const {
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull,
+} = require('graphql')
 
-const { connectionArgs, connectionFromArray } = require("graphql-relay")
+const {
+  connectionArgs,
+  connectionFromArray,
+  mutationWithClientMutationId,
+} = require('graphql-relay')
 
-const { BookConnection } = require("./types/book/type")
-const books = require("./types/book/resolver")
+const { BookConnection, Book } = require('./types/book/type')
+const books = require('./types/book/resolver')
 
-const { nodeField } = require("./interfaces/Node")
+const { nodeField } = require('./interfaces/Node')
 
 const query = new GraphQLObjectType({
-  name: "Query",
+  name: 'Query',
   fields: {
     node: nodeField,
     books: {
@@ -19,8 +28,32 @@ const query = new GraphQLObjectType({
   },
 })
 
+const createBookMutation = mutationWithClientMutationId({
+  name: 'createBook',
+  inputFields: {
+    title: { type: new GraphQLNonNull(GraphQLString) },
+    author: { type: new GraphQLNonNull(GraphQLString) },
+  },
+  outputFields: {
+    book: {
+      type: Book,
+      resolve: payload => books.findOne(payload.id),
+    },
+  },
+  mutateAndGetPayload: args => books.create(args),
+})
+
+const mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  description: 'Mutation interface for bookshelf',
+  fields: {
+    createBook: createBookMutation,
+  },
+})
+
 const schema = new GraphQLSchema({
   query,
+  mutation,
 })
 
 module.exports = schema

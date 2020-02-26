@@ -29,7 +29,17 @@ const addModelName = data => ({
 const find = () => books.map(addModelName)
 const findOne = bid => find().find(({ id }) => id == bid)
 
+const create = data => {
+  const id = books.length + 1
+  const book = { id, ...data }
+
+  books.push(book)
+
+  return book
+}
+
 module.exports = {
+  create,
   find,
   findOne,
 }
