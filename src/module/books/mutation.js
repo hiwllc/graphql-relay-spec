@@ -1,10 +1,6 @@
 const { GraphQLNonNull, GraphQLString } = require('graphql')
 const { mutationWithClientMutationId } = require('graphql-relay')
 
-/**
- * @TODO: this should be in context.
- */
-const books = require('./resolver')
 const { Book } = require('./type')
 
 const createBookMutation = mutationWithClientMutationId({
@@ -16,10 +12,11 @@ const createBookMutation = mutationWithClientMutationId({
   outputFields: {
     book: {
       type: Book,
-      resolve: payload => books.findOne(payload.id),
+      resolve: (payload, args, { resolvers }) =>
+        resolvers.Book.findOne(payload.id),
     },
   },
-  mutateAndGetPayload: args => books.create(args),
+  mutateAndGetPayload: (args, { resolvers }) => resolvers.Book.create(args),
 })
 
 module.exports = { createBookMutation }

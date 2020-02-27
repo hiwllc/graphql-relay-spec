@@ -1,5 +1,5 @@
 const { fromGlobalId, nodeDefinitions } = require('graphql-relay')
-const Loaders = require('../loaders')
+const Resolvers = require('../resolvers')
 
 const types = {}
 
@@ -11,7 +11,7 @@ const registerType = type => {
 const { nodeInterface, nodeField } = nodeDefinitions(
   globalID => {
     const { type, id } = fromGlobalId(globalID)
-    return Loaders[type].findOne(id) || null
+    return (Resolvers[type] && Resolvers[type].findOne(id)) || null
   },
   object => types[object.__name] || null
 )
