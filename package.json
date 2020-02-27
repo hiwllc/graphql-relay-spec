@@ -1,5 +1,5 @@
 {
-  "main": "server.js",
+  "main": "./src/server.js",
   "scripts": {
     "start": "nodemon ."
   },

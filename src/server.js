@@ -1,6 +1,6 @@
-const Koa = require("koa")
-const graphHTTP = require("koa-graphql")
-const schema = require("./schema")
+const Koa = require('koa')
+const graphHTTP = require('koa-graphql')
+const schema = require('./schema')
 
 const app = new Koa()
 

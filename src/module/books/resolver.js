@@ -1,3 +1,4 @@
+// this should be in db
 const books = [
   {
     id: 1,
@@ -26,7 +27,14 @@ const addModelName = data => ({
   __name: 'Book',
 })
 
-const find = () => books.map(addModelName)
+const find = order => {
+  if (order === 'DESC') {
+    return books.map(addModelName).reverse()
+  }
+
+  return books.map(addModelName)
+}
+
 const findOne = bid => find().find(({ id }) => id == bid)
 
 const create = data => {
